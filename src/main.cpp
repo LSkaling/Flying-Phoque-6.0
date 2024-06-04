@@ -7,20 +7,19 @@
 #include "ADXL345.h"
 #include "LPS22.h"
 #include "Igniter.h"
+#include "Feedback.h"
 #include <SD.h>
-
 
 HallEffect hallEffect(PinDefs.HALL_EFFECT);
 
 StatusIndicator statusIndicator(PinDefs.STATUS_LED_RED, PinDefs.STATUS_LED_GREEN, PinDefs.STATUS_LED_BLUE);
+Buzzer buzzer(PinDefs.BUZZER);
+Feedback feedback(statusIndicator, buzzer);
 
 ADXL345 accel;
-
-Buzzer buzzer(PinDefs.BUZZER);
-
 LPS22 lps;
 
-Igniter igniter(PinDefs.IGNITER, PinDefs.IGNITER_SENSE);
+//Igniter igniter(PinDefs.IGNITER, PinDefs.IGNITER_SENSE);
 
 const int chipSelect = BUILTIN_SDCARD;
 File logFile;
