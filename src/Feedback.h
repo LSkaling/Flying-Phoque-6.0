@@ -32,4 +32,6 @@ class Feedback{
         std::map<Status, FeedbackPattern> patterns;
 
         
-}
+};
+
+#endif

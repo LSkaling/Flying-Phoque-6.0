@@ -2,44 +2,44 @@
 #define STATUS_INDICATOR_H
 
 class StatusIndicator {
-public:
-    StatusIndicator(int redPin, int greenPin, int bluePin);
+    public:
+        StatusIndicator(int redPin, int greenPin, int bluePin);
 
-    enum Color {
-        RED,
-        GREEN,
-        BLUE,
-        ORANGE,
-        WHITE,
-        OFF
-    };
+        enum Color {
+            RED,
+            GREEN,
+            BLUE,
+            ORANGE,
+            WHITE,
+            OFF
+        };
 
-    Color currentColor;
+        Color currentColor;
 
-    void flash(Color color, int onDurationMs, int offDurationMs);
-    void solid(Color color);
-    void off();
-    void update();
-    void setIntensity(float redIntensity, float greenIntensity, float blueIntensity);
-//    void setBrightness(int pin, int intensity); // 0-255
+        void flash(Color color, int onDurationMs, int offDurationMs);
+        void solid(Color color);
+        void off();
+        void update();
+        void setIntensity(float redIntensity, float greenIntensity, float blueIntensity);
+    //    void setBrightness(int pin, int intensity); // 0-255
 
-private:
-    int redPin;
-    int greenPin;
-    int bluePin;
+    private:
+        int redPin;
+        int greenPin;
+        int bluePin;
 
-    int redPower;
-    int greenPower;
-    int bluePower;
+        int redPower;
+        int greenPower;
+        int bluePower;
 
-    int onDurationMs;
-    int offDurationMs;
+        int onDurationMs;
+        int offDurationMs;
 
-    float redIntensity;
-    float greenIntensity;
-    float blueIntensity;
+        float redIntensity;
+        float greenIntensity;
+        float blueIntensity;
 
-    const int MAX_INTENSITY = 16;
+        int MAX_INTENSITY; //TODO: How to set this to constant?
 };
 
 #endif

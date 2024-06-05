@@ -9,6 +9,7 @@ StatusIndicator::StatusIndicator(int redPin, int greenPin, int bluePin) {
   greenIntensity = 1;
   blueIntensity = 1;
   currentColor = OFF;
+  MAX_INTENSITY = 16;
 }
 
 void StatusIndicator::flash(Color color, int onDurationMs, int offDurationMs) {

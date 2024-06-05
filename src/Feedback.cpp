@@ -2,15 +2,11 @@
 #include <map>
 
 
-Feedback::Feedback(StatusIndicator statusIndicator, Buzzer buzzer) {
+Feedback::Feedback(StatusIndicator statusIndicator, Buzzer buzzer) 
+    : statusIndicator(statusIndicator), buzzer(buzzer) {
     patterns[IDLE] = {IDLE, StatusIndicator::BLUE, 200, 2000, 500};
     patterns[ARMED] = {ARMED, StatusIndicator::GREEN, 200, 2000, 500};
     patterns[FAILURE] = {FAILURE, StatusIndicator::RED, 200, 200, 1000};
-    this->statusIndicator = statusIndicator;
-    this->buzzer = buzzer;
-    currentStatus = IDLE;
-    statusIndicator.solid(patterns[IDLE].color);
-    buzzer.noBeep();
 }
 
 void Feedback::setStatus(Status newStatus) {

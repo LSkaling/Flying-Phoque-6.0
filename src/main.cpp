@@ -40,10 +40,7 @@ void setup() {
   Serial.begin(9600);
   PinDefs.setupPins();
 
-  statusIndicator.setIntensity(1, 0.15, 0.15);
-  statusIndicator.solid(StatusIndicator::BLUE);
-
-  //buzzer.slowBeep();
+  feedback.setStatus(IDLE);
 
   Serial.println("Accel Init");
   accel.begin();
@@ -79,11 +76,6 @@ void setup() {
 
   // Print to Serial Monitor
   Serial.println("Recording Finished!");
-
-  
-
-  igniter.arm();
-
 }
 
 void loop() {
@@ -108,6 +100,5 @@ void loop() {
   logFile.println();
   logFile.flush();
   
-  statusIndicator.update();
-  buzzer.update();
+  feedback.update();
 }
