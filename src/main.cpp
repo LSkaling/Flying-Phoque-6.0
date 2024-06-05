@@ -20,7 +20,7 @@ Buzzer buzzer(PinDefs.BUZZER);
 Feedback feedback(statusIndicator, buzzer);
 
 ADXL345 accel;
-sensors_event_t event; //TODO: should decompose this into better format in class
+sensors_event_t event;
 float altitude;
 float accel_x;
 float accel_y;
