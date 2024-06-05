@@ -24,6 +24,8 @@ public:
     const int HBRIDGE1;
     const int HBRIDGE2;
 
+    const int SD_CS;
+
     void setupPins();
 };
 

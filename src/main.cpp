@@ -8,7 +8,10 @@
 #include "LPS22.h"
 #include "Igniter.h"
 #include "Feedback.h"
-#include <SD.h>
+#include "DataLogger.h"
+#include <vector>
+#include <functional>
+
 
 HallEffect hallEffect(PinDefs.HALL_EFFECT);
 
@@ -17,88 +20,60 @@ Buzzer buzzer(PinDefs.BUZZER);
 Feedback feedback(statusIndicator, buzzer);
 
 ADXL345 accel;
+sensors_event_t event; //TODO: should decompose this into better format in class
+float altitude;
+float accel_x;
+float accel_y;
+float accel_z;
+int time_ms;
+
 LPS22 lps;
 
-//Igniter igniter(PinDefs.IGNITER, PinDefs.IGNITER_SENSE);
 
-const int chipSelect = BUILTIN_SDCARD;
-File logFile;
+std::vector<DataLogger::Variable> variables = {
+    {"time", []() { return time_ms; }},
+    {"altitude", []() { return altitude; }},
+    {"x_accel", []() { return accel_x; }},
+    {"y_accel", []() { return accel_y; }},
+    {"z_accel", []() { return accel_z; }}
+};
 
-String getNextLogFileName() {
-  int fileNumber = 1;
-  String fileName;
-  while (true) {
-    fileName = "flight_log_" + String(fileNumber) + ".txt";
-    if (!SD.exists(fileName.c_str())) {
-      break;
-    }
-    fileNumber++;
-  }
-  return fileName;
-}
+DataLogger dataLogger(PinDefs.SD_CS, true, variables);
+
+
+
 void setup() {
   Serial.begin(9600);
   PinDefs.setupPins();
 
   feedback.setStatus(IDLE);
 
-  Serial.println("Accel Init");
-  accel.begin();
+  dataLogger.begin();
 
-  Serial.println("LPS Init");
+  accel.begin();
   lps.begin();
 
-  if (!SD.begin(chipSelect)) {
-    Serial.println("Card failed, or not present");
-    // don't do anything more:
-    return;
-  }
-  Serial.println("card initialized.");
 
-  // Get the next log file name
-  String logFileName = getNextLogFileName();
-  Serial.print("Creating log file: ");
-  Serial.println(logFileName);
-
-  logFile = SD.open(logFileName.c_str(), FILE_WRITE);
-  if (!logFile) {
-    Serial.println("Error opening log file.");
-    return;
-  }
-
-  logFile.println("Flight Log Start");
-  logFile.println("Time\tX\tY\tZ\tAltitude");
-  logFile.flush();
-  
-  Serial.println("Setup done");
 
   lps.setDataRate(LPS22_RATE_10_HZ);
 
-  // Print to Serial Monitor
-  Serial.println("Recording Finished!");
 }
 
 void loop() {
-  //print out time
-  Serial.print(millis()); Serial.print(" ");
-  logFile.print(millis()); logFile.print("\t");
-
   //print out the acceleration data
   sensors_event_t event = accel.getEvent();
-  Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
-  Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
-  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");Serial.print("m/s^2 ");
-  logFile.print(event.acceleration.x); logFile.print("\t");
-  logFile.print(event.acceleration.y); logFile.print("\t");
-  logFile.print(event.acceleration.z); logFile.print("\t");
+  accel_x = event.acceleration.x;
+  accel_y = event.acceleration.y;
+  accel_z = event.acceleration.z;
+  time_ms = millis();
   
   //print out the altitude data
-  float altitude = lps.readAltitude();
-  Serial.print("\tAltitude: "); Serial.print(altitude); Serial.println("m");
-  logFile.print(altitude); logFile.print("\t");
+  altitude = lps.readAltitude();
 
-  logFile.println();
-  logFile.flush();
+
+  // logFile.println(); //MNake sure these get added
+  // logFile.flush();
+  dataLogger.logData();
   
   feedback.update();
 }

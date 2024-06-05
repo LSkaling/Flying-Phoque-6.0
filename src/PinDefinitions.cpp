@@ -1,5 +1,6 @@
 #include "PinDefinitions.h"
 #include <Arduino.h>
+#include "SD.h"
 
 PinDefinitions::PinDefinitions():
     STATUS_LED_RED(35),
@@ -21,7 +22,9 @@ PinDefinitions::PinDefinitions():
     SERVO_1(25),
 
     HBRIDGE1(28),
-    HBRIDGE2(29)
+    HBRIDGE2(29),
+
+    SD_CS(BUILTIN_SDCARD)
 {
     // Constructor
 }
