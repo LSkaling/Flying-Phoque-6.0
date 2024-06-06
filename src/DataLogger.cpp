@@ -42,7 +42,6 @@ bool DataLogger::logData() {
             Serial.print(variable.name + ": " + String(value) + " ");
         }
     }
-    dataLine += "\n";
     logFile.println(dataLine);
     logFile.flush(); // Ensure data is written to the SD card
 
