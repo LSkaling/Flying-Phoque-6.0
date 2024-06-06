@@ -24,11 +24,11 @@ class Feedback{
         Feedback(StatusIndicator statusIndicator, Buzzer buzzer);
         void setStatus(Status newStatus);
         void update();
+        Status currentStatus;
     
     private:
         StatusIndicator statusIndicator;
         Buzzer buzzer;
-        Status currentStatus;
         std::map<Status, FeedbackPattern> patterns;
 
         

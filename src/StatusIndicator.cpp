@@ -96,7 +96,6 @@ void StatusIndicator::update() {
     digitalWrite(redPin, time < redPower * redIntensity ? LOW : HIGH);
     digitalWrite(greenPin, time < greenPower * greenIntensity ? LOW : HIGH);
     digitalWrite(bluePin, time < bluePower * blueIntensity ? LOW : HIGH);
-    Serial.println(time < redPower * redIntensity ? LOW : HIGH);
   } else { //off
     digitalWrite(redPin, HIGH);
     digitalWrite(greenPin, HIGH);

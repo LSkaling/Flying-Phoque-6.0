@@ -13,8 +13,8 @@ class DataLogger {
         };
 
         DataLogger(int chipSelectPin, bool useSerialMonitor, std::vector<Variable> variables);
-        void begin();
-        void logData();
+        bool begin();
+        bool logData();
 
     private:
         int csPin;

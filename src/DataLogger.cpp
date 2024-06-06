@@ -6,37 +6,38 @@
 DataLogger::DataLogger(int chipSelectPin, bool useSerialMonitor, std::vector<Variable> vars)
     : csPin(chipSelectPin), serialMonitor(useSerialMonitor), variables(vars) {}
 
-void DataLogger::begin() {
+bool DataLogger::begin() {
     if (!SD.begin(csPin)) {
-        if (serialMonitor) {
-            Serial.println("SD card initialization failed!");
-        }
-        return;
+        return false;
     }
 
-    logFile = SD.open("datalog.txt", FILE_WRITE);
+    String fileName = getNextLogFileName(); 
+    logFile = SD.open(fileName.c_str(), FILE_WRITE);
     if (!logFile) {
-        if (serialMonitor) {
-            Serial.println("Failed to open datalog file!");
-        }
-        return;
+        return false;
     }
+    logFile.println("Data Logger Initialized");
 
-    if (serialMonitor) {
-        Serial.begin(9600);
-        while (!Serial) {
-            ; // Wait for serial port to connect. Needed for native USB port only
-        }
+    //print the header
+    String header;
+    for (const auto& variable : variables) {
+        header += variable.name + "\t";
     }
+    logFile.println(header);
+    logFile.flush(); // Ensure data is written to the SD card
+
+    return true;
 }
 
-void DataLogger::logData() {
-    if (!logFile) return;
+bool DataLogger::logData() {
+    if (!logFile) {
+        return false;
+    }
 
     String dataLine;
     for (const auto& variable : variables) {
         float value = variable.getter();
-        dataLine += variable.name + ": " + String(value) + " ";
+        dataLine += String(value) + "\t";
         if (serialMonitor) {
             Serial.print(variable.name + ": " + String(value) + " ");
         }
@@ -48,6 +49,7 @@ void DataLogger::logData() {
     if (serialMonitor) {
         Serial.println();
     }
+    return true;
 }
 
 String DataLogger::getNextLogFileName() {

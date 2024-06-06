@@ -43,19 +43,27 @@ DataLogger dataLogger(PinDefs.SD_CS, true, variables);
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   PinDefs.setupPins();
 
   feedback.setStatus(IDLE);
 
-  dataLogger.begin();
+  if(!dataLogger.begin()) {
+    feedback.setStatus(FAILURE);
+  }
 
-  accel.begin();
-  lps.begin();
+  if(!accel.begin()) {
+    feedback.setStatus(FAILURE);
+  }
 
-
-
+  if(!lps.begin()) {
+    feedback.setStatus(FAILURE);
+  }
   lps.setDataRate(LPS22_RATE_10_HZ);
+
+  if(feedback.currentStatus != FAILURE) {
+    feedback.setStatus(ARMED);
+  }
 
 }
 
@@ -66,14 +74,8 @@ void loop() {
   accel_y = event.acceleration.y;
   accel_z = event.acceleration.z;
   time_ms = millis();
-  
-  //print out the altitude data
   altitude = lps.readAltitude();
-
-
-  // logFile.println(); //MNake sure these get added
-  // logFile.flush();
-  dataLogger.logData();
-  
+  if(!dataLogger.logData()){ //Occurs if unplugged TODO: Why didn't this change states?
+    feedback.setStatus(FAILURE);}
   feedback.update();
 }
